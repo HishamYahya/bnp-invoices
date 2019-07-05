@@ -25,12 +25,18 @@ const PrivateRoute = ({
 };
 
 export default class App extends Component {
+  state = { authed: false };
   render() {
     return (
       <BrowserRouter>
         <AppBar />
         <Switch>
-          <PrivateRoute path="/login" component={LoginPage} redirectTo="/" />
+          <PrivateRoute
+            path="/login"
+            component={LoginPage}
+            redirectTo="/"
+            condition
+          />
           <PrivateRoute condition path="/" exact component={MainPage} />
         </Switch>
       </BrowserRouter>
