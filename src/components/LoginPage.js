@@ -1,55 +1,97 @@
-import React, { Component } from 'react';
 import '../styles/LoginPage.css';
+import React, { Component, Fragment } from 'react';
+import { connect } from 'react-redux';
 import { TextField, Box, Button } from '@material-ui/core';
 import { reduxForm, Field } from 'redux-form';
+import { signIn } from '../actions';
 
-export default class LoginPage extends Component {
-  state = {
-    email: '',
-    password: '',
+class LoginPage extends Component {
+  onSubmit = formValues => {
+    if (formValues.email) {
+      return this.props.signIn(formValues.email, formValues.password);
+    }
   };
 
-  componentDidMount() {
-    window.addEventListener('keypress', event => {
-      if (event.keyCode === 13) this.onSubmit();
-    });
-  }
+  renderTextField = ({
+    input,
+    label,
+    meta: { touched, error, active },
+    ...custom
+  }) => {
+    const isError = error && touched && !active;
 
-  onSubmit = () => {
-    console.log(this.state);
+    return (
+      <Fragment>
+        <TextField
+          id="outlined-full-width"
+          label={label}
+          error={isError}
+          fullWidth
+          required
+          margin="normal"
+          variant="outlined"
+          {...input}
+          {...custom}
+        />
+      </Fragment>
+    );
   };
 
   render() {
+    console.log(this.props);
+    const { handleSubmit, pristine, submitting, invalid } = this.props;
     return (
       <div className="container">
         <Box className="form">
           <img src={require('../images/logo.jpeg')} alt="logo" />
-          <Box>
-            <TextField
-              id="outlined-full-width"
+          <form onSubmit={handleSubmit(this.onSubmit)}>
+            <Field
               label="Email"
-              fullWidth
-              value={this.state.email}
-              onChange={e => this.setState({ email: e.target.value })}
-              margin="normal"
-              variant="outlined"
+              name="email"
+              component={this.renderTextField}
             />
-
-            <TextField
-              id="outlined-name"
-              label="Name"
-              value={this.state.password}
-              onChange={e => this.setState({ password: e.target.value })}
-              fullWidth
-              margin="normal"
-              variant="outlined"
+            <Field
+              label="Password"
+              name="password"
+              component={this.renderTextField}
             />
-            <Button variant="contained" size="large" onClick={this.onSubmit}>
-              Login
-            </Button>
-          </Box>
+            <Box>
+              <Button
+                variant="contained"
+                size="large"
+                onClick={this.onSubmit}
+                type="submit"
+                disabled={pristine || submitting || invalid}
+              >
+                {submitting ? 'Loading...' : 'Login'}
+              </Button>
+            </Box>
+          </form>
         </Box>
       </div>
     );
   }
 }
+
+const validate = formValues => {
+  const errors = {};
+  if (!formValues.email) errors.email = 'Please enter a valid email';
+  if (!formValues.password) errors.password = 'Please enter a password';
+  return errors;
+};
+
+const formComponent = reduxForm({
+  form: 'loginForm',
+  validate,
+  initialValues: {
+    email: 'a@a.com',
+    password: '11111111',
+  },
+})(LoginPage);
+
+const mapStateToProps = state => ({ auth: state.auth });
+
+export default connect(
+  mapStateToProps,
+  { signIn },
+)(formComponent);
