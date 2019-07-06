@@ -37,7 +37,7 @@ export default class App extends Component {
             redirectTo="/"
             condition
           />
-          <PrivateRoute condition path="/" exact component={MainPage} />
+          <PrivateRoute path="/" exact component={MainPage} />
         </Switch>
       </BrowserRouter>
     );

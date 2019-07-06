@@ -1,8 +1,14 @@
 import React, { Component } from 'react';
 import '../styles/LoginPage.css';
 import { TextField, Box, Button } from '@material-ui/core';
+import { reduxForm, Field } from 'redux-form';
 
 export default class LoginPage extends Component {
+  state = {
+    email: '',
+    password: '',
+  };
+
   componentDidMount() {
     window.addEventListener('keypress', event => {
       if (event.keyCode === 13) this.onSubmit();
@@ -10,7 +16,7 @@ export default class LoginPage extends Component {
   }
 
   onSubmit = () => {
-    console.log('submitted');
+    console.log(this.state);
   };
 
   render() {
@@ -21,9 +27,10 @@ export default class LoginPage extends Component {
           <Box>
             <TextField
               id="outlined-full-width"
-              label="Namesdf"
+              label="Email"
               fullWidth
-              value="hisdf"
+              value={this.state.email}
+              onChange={e => this.setState({ email: e.target.value })}
               margin="normal"
               variant="outlined"
             />
@@ -31,7 +38,8 @@ export default class LoginPage extends Component {
             <TextField
               id="outlined-name"
               label="Name"
-              value="hi"
+              value={this.state.password}
+              onChange={e => this.setState({ password: e.target.value })}
               fullWidth
               margin="normal"
               variant="outlined"
