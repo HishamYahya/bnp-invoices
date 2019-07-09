@@ -1,5 +1,24 @@
 import firebase from 'firebase';
-import { SIGN_IN } from '../types';
+import { SIGN_IN, FETCH_SUCCESS, CHANGE_USER, SIGN_OUT } from '../types';
+import history from '../history';
+
+export const fetchInvoices = () => async dispatch => {
+  const response = await firebase
+    .firestore()
+    .collection('invoices')
+    .get();
+
+  const invoices = [];
+  response.docs.forEach(doc => invoices.push(doc.data()));
+  invoices.forEach(
+    inv => (inv.time = new Date(inv.time.seconds * 1000).toJSON()),
+  );
+  if (response)
+    dispatch({
+      type: FETCH_SUCCESS,
+      payload: invoices,
+    });
+};
 
 export const signIn = (email, password) => async dispatch => {
   const response = await firebase
@@ -8,11 +27,18 @@ export const signIn = (email, password) => async dispatch => {
 
   //TODO: admin list in database
 
-  const isAdmin =
-    response.user.uid === 'YKUBEbSTfgPR0Jwd1N6n29CAG3b2' ? true : false;
-  console.log(isAdmin);
-  dispatch({
-    type: SIGN_IN,
-    payload: { uid: response.user.uid, isAdmin: isAdmin },
-  });
+  if (response) {
+    let isAdmin = true;
+    dispatch(fetchInvoices());
+    await firebase
+      .firestore()
+      .collection('users')
+      .get()
+      .catch(() => (isAdmin = false));
+    dispatch({
+      type: SIGN_IN,
+      payload: { user: response.user, isAdmin },
+    });
+    history.push('/');
+  }
 };

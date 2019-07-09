@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
-import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { Router, Route, Redirect, Switch } from 'react-router-dom';
 import firebase from 'firebase';
 import LoginPage from './LoginPage';
 import MainPage from './MainPage';
 import AppBar from './AppBar';
+import history from '../history';
 
 const PrivateRoute = ({
   component: Component,
@@ -25,7 +27,7 @@ const PrivateRoute = ({
   );
 };
 
-export default class App extends Component {
+class App extends Component {
   state = { authed: false };
   componentWillMount() {
     const firebaseConfig = {
@@ -42,18 +44,26 @@ export default class App extends Component {
 
   render() {
     return (
-      <BrowserRouter>
-        <AppBar />
+      <Router history={history}>
         <Switch>
           <PrivateRoute
             path="/login"
             component={LoginPage}
             redirectTo="/"
-            condition
+            condition={!this.props.isSignedIn}
           />
-          <PrivateRoute path="/" exact component={MainPage} />
+          <PrivateRoute
+            path="/"
+            exact
+            component={MainPage}
+            condition={this.props.isSignedIn}
+          />
         </Switch>
-      </BrowserRouter>
+      </Router>
     );
   }
 }
+
+const mapStateToProps = state => ({ isSignedIn: state.auth.isSignedIn });
+
+export default connect(mapStateToProps)(App);

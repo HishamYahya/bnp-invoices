@@ -2,7 +2,7 @@
     display: flex;
     position: absolute;
     height: 100%;
-    width: 98%;
+    width: 100%;
     background-color: rgb(240,
         227,
         205)
@@ -16,14 +16,21 @@
     bottom: 0;
     right: 0;
     margin: auto;
-    height: 35%;
-    width: 30%;
-    min-height: 50vh;
-    min-width: 50vh;
+    max-height: 65%;
+    max-width: 80vh;
+
+    /* min-height: 60vh;
+    min-width: 45vh; */
     background-color: white;
     flex-direction: column;
     justify-content: space-between;
     justify-content: center;
     align-items: center;
+    text-align: center;
     box-shadow: 5px 5px 8px #888888;
+}
+
+.image {
+    width: auto;
+    max-height: 40%;
 }

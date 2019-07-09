@@ -43,7 +43,11 @@ class LoginPage extends Component {
     return (
       <div className="container">
         <Box className="form">
-          <img src={require('../images/logo.jpeg')} alt="logo" />
+          <img
+            src={require('../images/logo.jpeg')}
+            alt="logo"
+            className="image"
+          />
           <form onSubmit={handleSubmit(this.onSubmit)}>
             <Field
               label="Email"
@@ -61,7 +65,7 @@ class LoginPage extends Component {
                 size="large"
                 onClick={this.onSubmit}
                 type="submit"
-                disabled={pristine || submitting || invalid}
+                // disabled={pristine || submitting || invalid}
               >
                 {submitting ? 'Loading...' : 'Login'}
               </Button>

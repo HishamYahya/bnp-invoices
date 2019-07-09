@@ -1,11 +1,17 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { Typography } from '@material-ui/core';
 
-export default class MainPage extends Component {
+class MainPage extends Component {
   render() {
     return (
       <div>
-        <div>MainPage</div>
+        <Typography>{this.props.isAdmin ? 'yes' : 'no'}</Typography>
       </div>
     );
   }
 }
+
+const mapStateToProps = state => ({ isAdmin: state.auth.isAdmin });
+
+export default connect(mapStateToProps)(MainPage);
