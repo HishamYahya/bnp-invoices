@@ -1,9 +1,13 @@
-import React, { Component } from 'react';
-import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom';
+import React, { Component, Fragment } from 'react';
+import { connect } from 'react-redux';
+import { Router, Route, Redirect, Switch } from 'react-router-dom';
 import firebase from 'firebase';
-import LoginPage from './LoginPage';
-import MainPage from './MainPage';
+import LoginPage from './pages/LoginPage';
+import MainPage from './pages/MainPage';
 import AppBar from './AppBar';
+import history from '../history';
+import InvoicesPage from './pages/InvoicesPage';
+import CustomersPage from './pages/CustomersPage';
 
 const PrivateRoute = ({
   component: Component,
@@ -25,7 +29,7 @@ const PrivateRoute = ({
   );
 };
 
-export default class App extends Component {
+class App extends Component {
   state = { authed: false };
   componentWillMount() {
     const firebaseConfig = {
@@ -39,21 +43,46 @@ export default class App extends Component {
     };
     firebase.initializeApp(firebaseConfig);
   }
-
+  componentDidUpdate() {
+    console.log(firebase.auth());
+  }
   render() {
     return (
-      <BrowserRouter>
-        <AppBar />
-        <Switch>
-          <PrivateRoute
-            path="/login"
-            component={LoginPage}
-            redirectTo="/"
-            condition
-          />
-          <PrivateRoute path="/" exact component={MainPage} />
-        </Switch>
-      </BrowserRouter>
+      <Router history={history}>
+        <AppBar>
+          <Switch>
+            <PrivateRoute
+              path="/login"
+              component={LoginPage}
+              redirectTo="/"
+              condition={!this.props.isSignedIn}
+            />
+            <PrivateRoute
+              path="/"
+              exact
+              component={MainPage}
+              condition={this.props.isSignedIn}
+            />
+
+            <PrivateRoute
+              path="/invoices"
+              exact
+              component={InvoicesPage}
+              condition={this.props.isSignedIn}
+            />
+            <PrivateRoute
+              path="/customers"
+              exact
+              component={CustomersPage}
+              condition={this.props.isSignedIn}
+            />
+          </Switch>
+        </AppBar>
+      </Router>
     );
   }
 }
+
+const mapStateToProps = state => ({ isSignedIn: state.auth.isSignedIn });
+
+export default connect(mapStateToProps)(App);

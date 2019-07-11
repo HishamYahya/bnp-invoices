@@ -1,9 +1,9 @@
-import '../styles/LoginPage.css';
+import '../../styles/LoginPage.css';
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
-import { TextField, Box, Button } from '@material-ui/core';
+import { TextField, Box, Button, CssBaseline } from '@material-ui/core';
 import { reduxForm, Field } from 'redux-form';
-import { signIn } from '../actions';
+import { signIn } from '../../actions';
 
 class LoginPage extends Component {
   onSubmit = formValues => {
@@ -38,12 +38,16 @@ class LoginPage extends Component {
   };
 
   render() {
-    console.log(this.props);
     const { handleSubmit, pristine, submitting, invalid } = this.props;
     return (
       <div className="container">
+        <CssBaseline />
         <Box className="form">
-          <img src={require('../images/logo.jpeg')} alt="logo" />
+          <img
+            src={require('../../images/logo.jpeg')}
+            alt="logo"
+            className="image"
+          />
           <form onSubmit={handleSubmit(this.onSubmit)}>
             <Field
               label="Email"
@@ -61,7 +65,7 @@ class LoginPage extends Component {
                 size="large"
                 onClick={this.onSubmit}
                 type="submit"
-                disabled={pristine || submitting || invalid}
+                // disabled={pristine || submitting || invalid}
               >
                 {submitting ? 'Loading...' : 'Login'}
               </Button>
