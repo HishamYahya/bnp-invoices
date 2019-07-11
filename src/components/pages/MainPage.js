@@ -1,14 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Typography } from '@material-ui/core';
+import AppBar from '../AppBar';
 
 class MainPage extends Component {
   render() {
-    return (
-      <div>
-        <Typography>{this.props.isAdmin ? 'yes' : 'no'}</Typography>
-      </div>
-    );
+    return <div />;
   }
 }
 

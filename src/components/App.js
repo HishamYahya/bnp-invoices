@@ -1,11 +1,13 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { Router, Route, Redirect, Switch } from 'react-router-dom';
 import firebase from 'firebase';
-import LoginPage from './LoginPage';
-import MainPage from './MainPage';
+import LoginPage from './pages/LoginPage';
+import MainPage from './pages/MainPage';
 import AppBar from './AppBar';
 import history from '../history';
+import InvoicesPage from './pages/InvoicesPage';
+import CustomersPage from './pages/CustomersPage';
 
 const PrivateRoute = ({
   component: Component,
@@ -41,24 +43,41 @@ class App extends Component {
     };
     firebase.initializeApp(firebaseConfig);
   }
-
+  componentDidUpdate() {
+    console.log(firebase.auth());
+  }
   render() {
     return (
       <Router history={history}>
-        <Switch>
-          <PrivateRoute
-            path="/login"
-            component={LoginPage}
-            redirectTo="/"
-            condition={!this.props.isSignedIn}
-          />
-          <PrivateRoute
-            path="/"
-            exact
-            component={MainPage}
-            condition={this.props.isSignedIn}
-          />
-        </Switch>
+        <AppBar>
+          <Switch>
+            <PrivateRoute
+              path="/login"
+              component={LoginPage}
+              redirectTo="/"
+              condition={!this.props.isSignedIn}
+            />
+            <PrivateRoute
+              path="/"
+              exact
+              component={MainPage}
+              condition={this.props.isSignedIn}
+            />
+
+            <PrivateRoute
+              path="/invoices"
+              exact
+              component={InvoicesPage}
+              condition={this.props.isSignedIn}
+            />
+            <PrivateRoute
+              path="/customers"
+              exact
+              component={CustomersPage}
+              condition={this.props.isSignedIn}
+            />
+          </Switch>
+        </AppBar>
       </Router>
     );
   }
