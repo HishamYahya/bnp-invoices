@@ -8,6 +8,7 @@ import AppBar from './AppBar';
 import history from '../history';
 import InvoicesPage from './pages/InvoicesPage';
 import CustomersPage from './pages/CustomersPage';
+import CreateInvoicePage from './pages/CreateInvoicePage';
 
 const PrivateRoute = ({
   component: Component,
@@ -31,6 +32,7 @@ const PrivateRoute = ({
 
 class App extends Component {
   state = { authed: false };
+
   componentWillMount() {
     const firebaseConfig = {
       apiKey: 'AIzaSyDengBlfUeb4t4QSagVpQKNVNh2OOEGHZg',
@@ -43,9 +45,11 @@ class App extends Component {
     };
     firebase.initializeApp(firebaseConfig);
   }
+
   componentDidUpdate() {
     console.log(firebase.auth());
   }
+
   render() {
     return (
       <Router history={history}>
@@ -63,6 +67,12 @@ class App extends Component {
               component={MainPage}
               condition={this.props.isSignedIn}
             />
+            <PrivateRoute
+              path="/customers"
+              exact
+              component={CustomersPage}
+              condition={this.props.isSignedIn}
+            />
 
             <PrivateRoute
               path="/invoices"
@@ -71,9 +81,9 @@ class App extends Component {
               condition={this.props.isSignedIn}
             />
             <PrivateRoute
-              path="/customers"
+              path="/invoices/new"
               exact
-              component={CustomersPage}
+              component={CreateInvoicePage}
               condition={this.props.isSignedIn}
             />
           </Switch>

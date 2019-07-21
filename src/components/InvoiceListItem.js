@@ -24,7 +24,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function InvoiceListItem({ invoice, customers }) {
+function InvoiceListItem({ invoice, customers, expandAll }) {
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState(false);
 
@@ -36,7 +36,6 @@ function InvoiceListItem({ invoice, customers }) {
     const customer = customers.find(
       customer => customer.id === invoice.customerId,
     );
-    console.log(customers);
     return customer ? customer.name : 'ERROR';
   };
   return (
@@ -46,7 +45,7 @@ function InvoiceListItem({ invoice, customers }) {
       }}
     >
       <ExpansionPanel
-        expanded={expanded === 'panel1'}
+        expanded={expanded === 'panel1' || expandAll}
         onChange={handleChange('panel1')}
         style={{ backgroundColor: `${invoice.paid ? '#CCFFCC' : '#FFCCCC'}` }}
       >
@@ -55,9 +54,6 @@ function InvoiceListItem({ invoice, customers }) {
           aria-controls="panel1bh-content"
           id="panel1bh-header"
         >
-          <Typography className={classes.heading}>
-            {moment(invoice.time).fromNow()}
-          </Typography>
           <Grid
             container
             direction="row"
@@ -68,7 +64,9 @@ function InvoiceListItem({ invoice, customers }) {
               <Typography>{invoice.price}SAR</Typography>
             </Grid>
             <Grid item xs={4}>
-              <Typography>Customer {getCustomerName()}</Typography>
+              <Typography className={classes.heading}>
+                {moment(invoice.time).fromNow()}
+              </Typography>
             </Grid>
           </Grid>
         </ExpansionPanelSummary>

@@ -12,6 +12,7 @@ const store = createStore(
   reducers,
   composeEnhancers(applyMiddleware(ReduxThunk)),
 );
+
 ReactDOM.render(
   <Provider store={store}>
     <App />

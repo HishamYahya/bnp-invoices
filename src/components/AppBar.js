@@ -15,19 +15,14 @@ import {
   Drawer,
 } from '@material-ui/core';
 
-import {
-  Create,
-  Home,
-  Group,
-  PeopleOutline,
-  Menu,
-  Dashboard,
-} from '@material-ui/icons';
+import { Create, Home, PeopleOutline } from '@material-ui/icons';
 import MenuIcon from '@material-ui/icons/Menu';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import history from '../history';
 
 const drawerWidth = 240;
+
+// TODO: automatically close menu on mobile
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -72,6 +67,7 @@ function Layout(props) {
   function handleDrawerToggle() {
     setMobileOpen(!mobileOpen);
   }
+
   const renderListItem = (text, icon, onClick) => {
     return (
       <ListItem
@@ -80,6 +76,7 @@ function Layout(props) {
         onClick={() => {
           setSelected(text);
           onClick();
+          setMobileOpen(false);
         }}
         selected={selected === text}
       >

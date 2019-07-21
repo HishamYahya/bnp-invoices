@@ -1,15 +1,25 @@
 import '../../styles/LoginPage.css';
 import React, { Component, Fragment } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { TextField, Box, Button, CssBaseline } from '@material-ui/core';
+import {
+  TextField,
+  Box,
+  Button,
+  CssBaseline,
+  CircularProgress,
+  Typography,
+} from '@material-ui/core';
 import { reduxForm, Field } from 'redux-form';
 import { signIn } from '../../actions';
 
 class LoginPage extends Component {
   onSubmit = formValues => {
+    const { signIn } = this.props;
     if (formValues.email) {
-      return this.props.signIn(formValues.email, formValues.password);
+      return signIn(formValues.email, formValues.password);
     }
+    return null;
   };
 
   renderTextField = ({
@@ -38,16 +48,13 @@ class LoginPage extends Component {
   };
 
   render() {
-    const { handleSubmit, pristine, submitting, invalid } = this.props;
+    const img = require('../../images/logo.jpeg');
+    const { handleSubmit, pristine, submitting, invalid, auth } = this.props;
     return (
       <div className="container">
         <CssBaseline />
         <Box className="form">
-          <img
-            src={require('../../images/logo.jpeg')}
-            alt="logo"
-            className="image"
-          />
+          <img src={img} alt="logo" className="image" />
           <form onSubmit={handleSubmit(this.onSubmit)}>
             <Field
               label="Email"
@@ -65,10 +72,17 @@ class LoginPage extends Component {
                 size="large"
                 onClick={this.onSubmit}
                 type="submit"
+                // TODO: disable button
                 // disabled={pristine || submitting || invalid}
               >
-                {submitting ? 'Loading...' : 'Login'}
+                {submitting ? '' : 'Login'}
+                {submitting && <CircularProgress size={24} />}
               </Button>
+              {auth.err ? (
+                <Typography color="error">Sign in failed</Typography>
+              ) : (
+                ''
+              )}
             </Box>
           </form>
         </Box>
@@ -82,6 +96,14 @@ const validate = formValues => {
   if (!formValues.email) errors.email = 'Please enter a valid email';
   if (!formValues.password) errors.password = 'Please enter a password';
   return errors;
+};
+LoginPage.propTypes = {
+  handleSubmit: PropTypes.func.isRequired,
+  pristine: PropTypes.bool.isRequired,
+  submitting: PropTypes.bool.isRequired,
+  invalid: PropTypes.bool.isRequired,
+  signIn: PropTypes.func.isRequired,
+  auth: PropTypes.object.isRequired,
 };
 
 const formComponent = reduxForm({
